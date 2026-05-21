@@ -121,7 +121,9 @@ const upsertMedia = async (payload, filename, alt) => {
       id: existing.id,
       collection: 'media',
       data: { alt },
+      filePath: assetPath(filename),
       overrideAccess: true,
+      overwriteExistingFiles: true,
     })
   }
 

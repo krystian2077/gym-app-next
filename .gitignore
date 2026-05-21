@@ -9,6 +9,9 @@ out/
 dist/
 dist-ssr/
 
+# Payload local uploads
+media/
+
 # Logs
 logs/
 *.log

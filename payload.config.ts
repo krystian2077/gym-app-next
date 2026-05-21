@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 const pageOptions = [
   {
@@ -450,5 +451,16 @@ export default buildConfig({
     url: process.env.DATABASE_URI || '',
   }),
   editor: lexicalEditor({}),
+  plugins: [
+    vercelBlobStorage({
+      addRandomSuffix: false,
+      collections: {
+        media: true,
+      },
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    }),
+  ],
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
   secret: process.env.PAYLOAD_SECRET || '',
 })
