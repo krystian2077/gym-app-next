@@ -1,28 +1,40 @@
 "use client";
 
-const Footer = () => {
+import { defaultSiteContent, getMediaUrl, SiteContent } from "@/shared/cms";
+
+type Props = {
+  content?: SiteContent["footer"];
+};
+
+const Footer = ({ content = defaultSiteContent.footer }: Props) => {
+  const links = content?.links?.length
+    ? content.links
+    : defaultSiteContent.footer?.links || [];
+
   return (
     <footer className="bg-primary-100 py-16">
       <div className="justify-content mx-auto w-5/6 gap-16 md:flex">
         <div className="mt-16 basis-1/2 md:mt-0">
-          <img src="/assets/Logo.png" alt="logo" />
+          <img src={getMediaUrl(content?.logo, "/assets/Logo.png")} alt="logo" />
           <p className="my-5">
-            Lorem vitae ut augue auctor faucibus eget eget ut libero. Elementum
-            purus et arcu massa dictum condimentum. Augue scelerisque iaculis
-            orci ut habitant laoreet. Iaculis tristique.
+            {content?.description || defaultSiteContent.footer?.description}
           </p>
-          <p>© Evogym All Rights Reserved.</p>
+          <p>{content?.copyright || defaultSiteContent.footer?.copyright}</p>
         </div>
         <div className="mt-16 basis-1/4 md:mt-0">
-          <h4 className="font-bold">Links</h4>
-          <p className="my-5">Massa orci senectus</p>
-          <p className="my-5">Et gravida id et etiam</p>
-          <p>Ullamcorper vivamus</p>
+          <h4 className="font-bold">{content?.linksHeading || "Links"}</h4>
+          {links.map((link, index) => (
+            <p key={link.label} className={index < links.length - 1 ? "my-5" : ""}>
+              {link.label}
+            </p>
+          ))}
         </div>
         <div className="mt-16 basis-1/4 md:mt-0">
-          <h4 className="font-bold">Contact Us</h4>
-          <p className="my-5">Tempus metus mattis risus volutpat egestas.</p>
-          <p>(333)425-6825</p>
+          <h4 className="font-bold">{content?.contactHeading || "Contact Us"}</h4>
+          <p className="my-5">
+            {content?.contactText || defaultSiteContent.footer?.contactText}
+          </p>
+          <p>{content?.phone || defaultSiteContent.footer?.phone}</p>
         </div>
       </div>
     </footer>

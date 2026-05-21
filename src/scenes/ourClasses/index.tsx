@@ -4,6 +4,14 @@ import { ClassType, SelectedPage } from "@/shared/types";
 import HText from "@/shared/HText";
 import Class from "./Class";
 import { motion } from "framer-motion";
+import {
+  defaultClasses,
+  defaultSiteContent,
+  getMediaUrl,
+  getPlainText,
+  SiteClass,
+  SiteContent,
+} from "@/shared/cms";
 
 const classes: Array<ClassType> = [
   {
@@ -41,10 +49,18 @@ const classes: Array<ClassType> = [
 ];
 
 type Props = {
+  classes?: SiteClass[];
+  content?: SiteContent["classesSection"];
   setSelectedPage: (value: SelectedPage) => void;
 };
 
-const OurClasses = ({ setSelectedPage }: Props) => {
+const OurClasses = ({
+  classes: cmsClasses,
+  content = defaultSiteContent.classesSection,
+  setSelectedPage,
+}: Props) => {
+  const classItems = cmsClasses?.length ? cmsClasses : defaultClasses;
+
   return (
     <section id="ourclasses" className="w-full bg-primary-100 py-40">
       <motion.div
@@ -62,24 +78,25 @@ const OurClasses = ({ setSelectedPage }: Props) => {
           }}
         >
           <div className="md:w-3/5">
-            <HText>OUR CLASSES</HText>
+            <HText>{content?.heading || "OUR CLASSES"}</HText>
             <p className="py-5">
-              Fringilla a sed at suspendisse ut enim volutpat. Rhoncus vel est
-              tellus quam porttitor. Mauris velit euismod elementum arcu neque
-              facilisi. Amet semper tortor facilisis metus nibh. Rhoncus sit
-              enim mattis odio in risus nunc.
+              {content?.intro || defaultSiteContent.classesSection?.intro}
             </p>
           </div>
         </motion.div>
 
         <div className="mt-10 h-[353px] w-full overflow-x-auto overflow-y-hidden">
           <ul className="w-[2800px] whitespace-nowrap">
-            {classes.map((item: ClassType, index) => (
+            {classItems.map((item: ClassType | SiteClass, index) => (
               <Class
                 key={`${item.name}-${index}`}
                 name={item.name}
-                description={item.description}
-                image={item.image}
+                description={
+                  "excerpt" in item
+                    ? item.excerpt || getPlainText(item.description)
+                    : String(item.description || "")
+                }
+                image={getMediaUrl(item.image, "/assets/image1.png")}
               />
             ))}
           </ul>

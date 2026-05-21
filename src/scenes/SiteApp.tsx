@@ -1,16 +1,21 @@
 "use client";
 
-import Home from "@/scenes/home";
-import Navbar from "@/scenes/navbar";
+import { useEffect, useState } from "react";
 import Benefits from "@/scenes/benefits";
-import OurClasses from "@/scenes/ourClasses";
 import ContactUs from "@/scenes/contactUs";
 import Footer from "@/scenes/footer";
-
+import Home from "@/scenes/home";
+import Navbar from "@/scenes/navbar";
+import OurClasses from "@/scenes/ourClasses";
+import { SiteClass, SiteContent } from "@/shared/cms";
 import { SelectedPage } from "@/shared/types";
-import { useEffect, useState } from "react";
 
-export default function Page() {
+type Props = {
+  classes: SiteClass[];
+  siteContent: SiteContent;
+};
+
+export default function SiteApp({ classes, siteContent }: Props) {
   const [selectedPage, setSelectedPage] = useState<SelectedPage>(
     SelectedPage.Home
   );
@@ -31,15 +36,26 @@ export default function Page() {
   return (
     <div className="bg-gray-20">
       <Navbar
+        content={siteContent.navbar}
         isTopOfPage={isTopOfPage}
         selectedPage={selectedPage}
         setSelectedPage={setSelectedPage}
       />
-      <Home setSelectedPage={setSelectedPage} />
-      <Benefits setSelectedPage={setSelectedPage} />
-      <OurClasses setSelectedPage={setSelectedPage} />
-      <ContactUs setSelectedPage={setSelectedPage} />
-      <Footer />
+      <Home content={siteContent.home} setSelectedPage={setSelectedPage} />
+      <Benefits
+        content={siteContent.benefits}
+        setSelectedPage={setSelectedPage}
+      />
+      <OurClasses
+        classes={classes}
+        content={siteContent.classesSection}
+        setSelectedPage={setSelectedPage}
+      />
+      <ContactUs
+        content={siteContent.contact}
+        setSelectedPage={setSelectedPage}
+      />
+      <Footer content={siteContent.footer} />
     </div>
   );
 }

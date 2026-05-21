@@ -5,13 +5,19 @@ import { SelectedPage } from "@/shared/types";
 import ActionButton from "@/shared/ActionButton";
 import SmoothLink from "@/shared/SmoothLink";
 import { motion } from "framer-motion";
+import { defaultSiteContent, getMediaUrl, SiteContent } from "@/shared/cms";
 
 type Props = {
+  content?: SiteContent["home"];
   setSelectedPage: (value: SelectedPage) => void;
 };
 
-const Home = ({ setSelectedPage }: Props) => {
+const Home = ({ content = defaultSiteContent.home, setSelectedPage }: Props) => {
   const isAboveMediumScreens = useMediaQuery("(min-width:1120px)");
+  const sponsors = content?.sponsors?.length
+    ? content.sponsors
+    : defaultSiteContent.home?.sponsors || [];
+
   return (
     <section id="home" className="gap-16 bg-gray-20 py-10 md:h-full md:pb-0">
       {/* IMAGE AND HEADER */}
@@ -35,14 +41,15 @@ const Home = ({ setSelectedPage }: Props) => {
           >
             <div className="relative">
               <div className="before:absolute before:-left-20 before:-top-20 before:z-[-1] md:before:content-evolvetext">
-                <img src="/assets/HomePageText.png" alt="home-page-text" />
+                <img
+                  src={getMediaUrl(content?.headlineImage, "/assets/HomePageText.png")}
+                  alt="home-page-text"
+                />
               </div>
             </div>
 
             <p className="mt-8 text-sm">
-              Unrivaled Gym. Unparalleled Training Fitness Classes. World Class
-              Studios to get the Body Shapes That you Dream of.. Get Your Dream
-              Body Now.
+              {content?.body || defaultSiteContent.home?.body}
             </p>
           </motion.div>
 
@@ -59,7 +66,7 @@ const Home = ({ setSelectedPage }: Props) => {
             }}
           >
             <ActionButton setSelectedPage={setSelectedPage}>
-              Join Now
+              {content?.primaryCtaLabel || "Join Now"}
             </ActionButton>
 
             <SmoothLink
@@ -67,14 +74,17 @@ const Home = ({ setSelectedPage }: Props) => {
               onClick={() => setSelectedPage(SelectedPage.ContactUs)}
               href={`#${SelectedPage.ContactUs}`}
             >
-              <p>Learn More</p>
+              <p>{content?.secondaryCtaLabel || "Learn More"}</p>
             </SmoothLink>
           </motion.div>
         </div>
 
         {/* IMAGE */}
         <div className="mt-8 flex basis-3/5 justify-center md:z-10 md:ml-40 md:mt-16 md:justify-items-end">
-          <img src="/assets/HomePageGraphic.png" alt="home-pageGraphic" />
+          <img
+            src={getMediaUrl(content?.heroImage, "/assets/HomePageGraphic.png")}
+            alt="home-pageGraphic"
+          />
         </div>
       </motion.div>
 
@@ -83,9 +93,13 @@ const Home = ({ setSelectedPage }: Props) => {
         <div className="h-[150px] w-full bg-primary-100 py-10">
           <div className="mx-auto w-5/6">
             <div className=" flex w-3/5 items-center justify-between gap-8">
-              <img src="/assets/SponsorRedBull.png" alt="redbull-sponsor" />
-              <img src="/assets/SponsorForbes.png" alt="forbes-sponsor" />
-              <img src="/assets/SponsorFortune.png" alt="fortune-sponsor" />
+              {sponsors.map((sponsor) => (
+                <img
+                  key={sponsor.name}
+                  src={getMediaUrl(sponsor.logo, "")}
+                  alt={`${sponsor.name}-sponsor`}
+                />
+              ))}
             </div>
           </div>
         </div>

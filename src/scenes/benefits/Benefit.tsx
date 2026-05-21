@@ -11,13 +11,20 @@ const childVariant = {
 };
 
 type Props = {
+  ctaLabel?: string;
   icon: JSX.Element;
   title: string;
   description: string;
   setSelectedPage: (value: SelectedPage) => void;
 };
 
-const Benefit = ({ icon, title, description, setSelectedPage }: Props) => {
+const Benefit = ({
+  ctaLabel = "Learn More",
+  icon,
+  title,
+  description,
+  setSelectedPage,
+}: Props) => {
   return (
     <motion.div
       className="mt-5 rounded-md border-2 border-gray-100 px-5 py-16 text-center"
@@ -36,7 +43,7 @@ const Benefit = ({ icon, title, description, setSelectedPage }: Props) => {
         onClick={() => setSelectedPage(SelectedPage.ContactUs)}
         href={`#${SelectedPage.ContactUs}`}
       >
-        Learn More
+        {ctaLabel}
       </SmoothLink>
     </motion.div>
   );

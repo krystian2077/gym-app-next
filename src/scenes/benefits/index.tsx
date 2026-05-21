@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
 import ActionButton from "@/shared/ActionButton";
+import { defaultSiteContent, getMediaUrl, SiteContent } from "@/shared/cms";
 
 const benefits: Array<BenefitType> = [
   {
@@ -42,11 +43,32 @@ const container = {
 };
 
 type Props = {
+  content?: SiteContent["benefits"];
   setSelectedPage: (value: SelectedPage) => void;
 };
 
-const Benefits = ({ setSelectedPage }: Props) => {
+const getIcon = (icon: string | null | undefined) => {
+  if (icon === "group") return <UserGroupIcon className="h-6 w-6" />;
+  if (icon === "academic") return <AcademicCapIcon className="h-6 w-6" />;
+  return <HomeModernIcon className="h-6 w-6" />;
+};
+
+const Benefits = ({
+  content = defaultSiteContent.benefits,
+  setSelectedPage,
+}: Props) => {
   const isAboveMediumScreens = useMediaQuery("(min-width:1120px)");
+  const cards = content?.cards?.length
+    ? content.cards.map((card) => ({
+        description: card.description || "",
+        icon: getIcon(card.icon),
+        title: card.title,
+      }))
+    : benefits;
+  const featureParagraphs = content?.featureParagraphs?.length
+    ? content.featureParagraphs
+    : defaultSiteContent.benefits?.featureParagraphs || [];
+
   return (
     <section id="benefits" className="mx-auto min-h-full w-5/6 py-20">
       <motion.div
@@ -64,11 +86,9 @@ const Benefits = ({ setSelectedPage }: Props) => {
             visible: { opacity: 1, x: 0 },
           }}
         >
-          <HText>MORE THAN JUST GYM.</HText>
+          <HText>{content?.heading || "MORE THAN JUST GYM."}</HText>
           <p className="my-5 text-sm">
-            We provide world class fitness equipment, trainers and classes to
-            get you to your ultimate fitness goals with ease. We provide true
-            care into each and every member.
+            {content?.intro || defaultSiteContent.benefits?.intro}
           </p>
         </motion.div>
 
@@ -80,12 +100,13 @@ const Benefits = ({ setSelectedPage }: Props) => {
           viewport={{ once: true, amount: 0.5 }}
           variants={container}
         >
-          {benefits.map((benefit: BenefitType) => (
+          {cards.map((benefit: BenefitType) => (
             <Benefit
               key={benefit.title}
               icon={benefit.icon}
               title={benefit.title}
               description={benefit.description}
+              ctaLabel={content?.cardCtaLabel || "Learn More"}
               setSelectedPage={setSelectedPage}
             />
           ))}
@@ -95,7 +116,10 @@ const Benefits = ({ setSelectedPage }: Props) => {
         <div className="mt-16 items-center justify-between gap-20 md:mt-28 md:flex">
           {/* GRAPHIC */}
           <img
-            src="/assets/BenefitsPageGraphic.png"
+            src={getMediaUrl(
+              content?.featureImage,
+              "/assets/BenefitsPageGraphic.png"
+            )}
             alt="benefits-page-graphic"
             className="mx-auto"
           />
@@ -116,8 +140,14 @@ const Benefits = ({ setSelectedPage }: Props) => {
                   }}
                 >
                   <HText>
-                    MILLIONS OF HAPPY MEMBERS GETTING{" "}
-                    <span className="text-primary-500">FIT</span>
+                    {content?.featureHeadingBefore ||
+                      defaultSiteContent.benefits?.featureHeadingBefore}{" "}
+                    <span className="text-primary-500">
+                      {content?.featureHeadingHighlight ||
+                        defaultSiteContent.benefits?.featureHeadingHighlight}
+                    </span>{" "}
+                    {content?.featureHeadingAfter ||
+                      defaultSiteContent.benefits?.featureHeadingAfter}
                   </HText>
                 </motion.div>
               </div>
@@ -134,20 +164,11 @@ const Benefits = ({ setSelectedPage }: Props) => {
                 visible: { opacity: 1, x: 0 },
               }}
             >
-              <p className="my-5">
-                Nascetur aenean massa auctor tincidunt. Iaculis potenti amet
-                egestas ultrices consectetur adipiscing ultricies enim. Pulvinar
-                fames vitae vitae quis. Quis amet vulputate tincidunt at in
-                nulla nec. Consequat sed facilisis dui sit egestas ultrices
-                tellus. Ullamcorper arcu id pretium sapien proin integer nisl.
-                Felis orci diam odio.
-              </p>
-              <p className="mb-5">
-                Fringilla a sed at suspendisse ut enim volutpat. Rhoncus vel est
-                tellus quam porttitor. Mauris velit euismod elementum arcu neque
-                facilisi. Amet semper tortor facilisis metus nibh. Rhoncus sit
-                enim mattis odio in risus nunc.
-              </p>
+              {featureParagraphs.map((paragraph, index) => (
+                <p key={`${paragraph.text}-${index}`} className={index === 0 ? "my-5" : "mb-5"}>
+                  {paragraph.text}
+                </p>
+              ))}
             </motion.div>
 
             {/* BUTTON */}
@@ -164,7 +185,7 @@ const Benefits = ({ setSelectedPage }: Props) => {
             >
               <div className="before:absolute before:-bottom-20 before:right-40 before:z-[-1] before:content-sparkles">
                 <ActionButton setSelectedPage={setSelectedPage}>
-                  Join Now
+                  {content?.ctaLabel || "Join Now"}
                 </ActionButton>
               </div>
             </motion.div>

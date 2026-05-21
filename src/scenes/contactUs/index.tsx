@@ -4,12 +4,17 @@ import { SelectedPage } from "@/shared/types";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import HText from "@/shared/HText";
+import { defaultSiteContent, getMediaUrl, SiteContent } from "@/shared/cms";
 
 type Props = {
+  content?: SiteContent["contact"];
   setSelectedPage: (value: SelectedPage) => void;
 };
 
-const ContactUs = ({ setSelectedPage }: Props) => {
+const ContactUs = ({
+  content = defaultSiteContent.contact,
+  setSelectedPage,
+}: Props) => {
   const inputStyles = `mb-5 w-full rounded-lg bg-primary-300 px-5 py-3 placeholder-white`;
 
   const {
@@ -43,12 +48,14 @@ const ContactUs = ({ setSelectedPage }: Props) => {
           }}
         >
           <HText>
-            <span className="text-primary-500">JOIN NOW</span> TO GET IN SHAPE
+            {content?.headingBefore}{" "}
+            <span className="text-primary-500">
+              {content?.headingHighlight || "JOIN NOW"}
+            </span>{" "}
+            {content?.headingAfter || "TO GET IN SHAPE"}
           </HText>
           <p className="my-5">
-            Congue adipiscing risus commodo placerat. Tellus et in feugiat nisl
-            sapien vel rhoncus. Placerat at in enim pellentesque. Nulla
-            adipiscing leo egestas nisi elit risus sit. Nunc cursus sagittis.
+            {content?.intro || defaultSiteContent.contact?.intro}
           </p>
         </motion.div>
 
@@ -68,13 +75,16 @@ const ContactUs = ({ setSelectedPage }: Props) => {
             <form
               target="_blank"
               onSubmit={onSubmit}
-              action="https://formsubmit.co/69d1759bf43ed044a3b955b8ebe1723d"
+              action={
+                content?.formAction ||
+                "https://formsubmit.co/69d1759bf43ed044a3b955b8ebe1723d"
+              }
               method="POST"
             >
               <input
                 className={inputStyles}
                 type="text"
-                placeholder="NAME"
+                placeholder={content?.namePlaceholder || "NAME"}
                 {...register("name", {
                   required: true,
                   maxLength: 100,
@@ -82,16 +92,18 @@ const ContactUs = ({ setSelectedPage }: Props) => {
               />
               {errors.name && (
                 <p className="mt-1 text-primary-500">
-                  {errors.name.type === "required" && "This field is required."}
+                  {errors.name.type === "required" &&
+                    (content?.requiredMessage || "This field is required.")}
                   {errors.name.type === "maxLength" &&
-                    "Max lenght is 100 char."}
+                    (content?.nameMaxLengthMessage ||
+                      "Max length is 100 char.")}
                 </p>
               )}
 
               <input
                 className={inputStyles}
                 type="text"
-                placeholder="EMAIL"
+                placeholder={content?.emailPlaceholder || "EMAIL"}
                 {...register("email", {
                   required: true,
                   pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -100,14 +112,15 @@ const ContactUs = ({ setSelectedPage }: Props) => {
               {errors.email && (
                 <p className="mt-1 text-primary-500">
                   {errors.email.type === "required" &&
-                    "This field is required."}
-                  {errors.email.type === "pattern" && "Invalid email address."}
+                    (content?.requiredMessage || "This field is required.")}
+                  {errors.email.type === "pattern" &&
+                    (content?.invalidEmailMessage || "Invalid email address.")}
                 </p>
               )}
 
               <textarea
                 className={inputStyles}
-                placeholder="MESSAGE"
+                placeholder={content?.messagePlaceholder || "MESSAGE"}
                 rows={4}
                 cols={50}
                 {...register("message", {
@@ -118,9 +131,10 @@ const ContactUs = ({ setSelectedPage }: Props) => {
               {errors.message && (
                 <p className="mt-1 text-primary-500">
                   {errors.message.type === "required" &&
-                    "This field is required."}
+                    (content?.requiredMessage || "This field is required.")}
                   {errors.message.type === "maxLength" &&
-                    "Max length is 2000 char."}
+                    (content?.messageMaxLengthMessage ||
+                      "Max length is 2000 char.")}
                 </p>
               )}
 
@@ -128,7 +142,7 @@ const ContactUs = ({ setSelectedPage }: Props) => {
                 type="submit"
                 className="mt-5 rounded-lg bg-secondary-500 px-20 py-3 transition duration-500 hover:text-white"
               >
-                SUBMIT
+                {content?.submitLabel || "SUBMIT"}
               </button>
             </form>
           </motion.div>
@@ -148,7 +162,10 @@ const ContactUs = ({ setSelectedPage }: Props) => {
               <img
                 className="w-full"
                 alt="contact-us-page-graphic"
-                src="/assets/ContactUsPageGraphic.png"
+                src={getMediaUrl(
+                  content?.image,
+                  "/assets/ContactUsPageGraphic.png"
+                )}
               />
             </div>
           </motion.div>

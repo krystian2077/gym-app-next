@@ -1,4 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import { withPayload } from '@payloadcms/next/withPayload'
 
-module.exports = nextConfig;
+/** @type {import('next').NextConfig} */
+const nextConfig = {}
+
+export default withPayload(nextConfig)
