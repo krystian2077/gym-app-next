@@ -234,10 +234,22 @@ export const getMediaUrl = (media: MediaValue, fallback: string) => {
   }
 
   if (typeof media === 'string') {
-    return media
+    return media.startsWith('/') || media.startsWith('http') ? media : fallback
   }
 
-  return media.url || (media.filename ? `/api/media/file/${media.filename}` : fallback)
+  if (media.url) {
+    if (media.url.startsWith('http')) {
+      return media.url
+    }
+
+    if (media.url.startsWith('/api/media/file/') && media.filename) {
+      return fallback || `/assets/${media.filename}`
+    }
+
+    return media.url
+  }
+
+  return media.filename ? fallback || `/assets/${media.filename}` : fallback
 }
 
 export const getPlainText = (value: unknown, fallback = ''): string => {

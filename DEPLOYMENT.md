@@ -39,6 +39,7 @@ vercel login
 vercel link
 vercel env pull .env.local
 npm run seed
+npm run repair:media
 ```
 
 This seeds:
@@ -48,6 +49,14 @@ This seeds:
 - `Media`
 
 The seed is idempotent, so it can be rerun after changing the seed data.
+
+`repair:media` uploads the bundled seed images from `public/assets` to Vercel Blob and updates Payload `Media` URLs. Run it whenever deployed images show as broken or after changing Blob storage.
+
+To inspect the current media state:
+
+```bash
+npm run check:media
+```
 
 ## Tester URLs
 

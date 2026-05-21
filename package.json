@@ -11,6 +11,9 @@
     "build": "next build",
     "start": "next start",
     "seed": "node --env-file=.env.local scripts/seed-content.mjs",
+    "repair:media": "node --env-file=.env.local scripts/fix-media-urls.mjs",
+    "check:media": "node --env-file=.env.local scripts/check-media.mjs",
+    "test:blob": "node --env-file=.env.local scripts/test-blob.mjs",
     "lint": "next lint"
   },
   "dependencies": {
@@ -19,6 +22,7 @@
     "@payloadcms/next": "^3.84.1",
     "@payloadcms/richtext-lexical": "^3.84.1",
     "@payloadcms/storage-vercel-blob": "^3.84.1",
+    "@vercel/blob": "^2.4.0",
     "framer-motion": "^12.40.0",
     "graphql": "^16.14.0",
     "next": "^16.2.6",
